@@ -1,6 +1,6 @@
 #!/usr/bin/python
-import os, sys
-import graph_gen
+import os, sys, json
+import graph_gen, condorcet
 
 def ballots_to_bump_edge_count(nodes, source, target):
     others = filter(lambda node: node != source and node != target, nodes)
@@ -33,7 +33,10 @@ def main():
         print graph
         nodes = graph['nodes']
         edges = graph['edges']
-        ballots = []
+
+        # gen ballots
+        all_tie_ballot = [[n for n in nodes]]
+        ballots = [all_tie_ballot]
         for edge in graph['edges']:
             ballots.extend(ballots_to_bump_edge_count(nodes, edge['source'], edge['target']))
         ballots_text = ballots_to_text(ballots)
@@ -41,6 +44,12 @@ def main():
         out_path = os.path.join(out_dir, '%d.txt'%graph_num)
         with open(out_path, 'w') as f:
             f.write(ballots_text + '\n')
+
+        # gen condorcet results
+        results = condorcet.get_condorcet_rankings(graph)
+        out_path = os.path.join(out_dir, '%d-results.json'%graph_num)
+        with open(out_path, 'w') as f:
+            f.write(json.dumps(results) + '\n')
 
 if __name__ == '__main__':
     main()
