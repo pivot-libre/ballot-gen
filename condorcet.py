@@ -1,17 +1,18 @@
 #!/usr/bin/python
 import graph_gen
+from collections import defaultdict as ddict
 
-def get_winners(graph):
-    winners = set()
-    for node in graph['nodes']:
+def get_winner(graph):
+    win_count = ddict(int)
+    nodes = graph['nodes']
+    for node in nodes:
         won = True
         for edge in graph['edges']:
-            if edge['target'] == node:
-                won = False
-                break
-        if won:
-            winners.add(node)
-    return winners
+            if edge['source'] == node:
+                win_count[node] += 1
+                if win_count[node] == len(nodes) - 1:
+                    return node # this one has an edge pointing to everybody else
+    return None
 
 def drop_nodes(graph, drop):
     nodes = filter(lambda node: node not in drop , graph['nodes'])
@@ -20,14 +21,14 @@ def drop_nodes(graph, drop):
 
 def get_condorcet_rankings(graph):
     cur = graph
-    results = []
+    order = []
     rank = 1
     while True:
-        winners = get_winners(cur)
-        if len(winners) == 0:
-            return results
-        results.append({'rank': rank, 'candidates': list(winners)})
-        cur = drop_nodes(cur, winners)
+        winner = get_winner(cur)
+        if winner == None:
+            return order
+        order.append({'rank': rank, 'candidate': winner})
+        cur = drop_nodes(cur, [winner])
         rank += 1
 
 def main():
