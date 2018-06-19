@@ -8,7 +8,10 @@ SOURCE = 'source'
 TARGET = 'target'
 
 def random_gen_size(node_count=1):
-    nodes = map(str, range(node_count))
+    if node_count <= 26:
+        nodes = [chr(ord('A')+i) for i in range(node_count)]
+    else:
+        nodes = ['N%d'%i for i in range(node_count)]
     edges = []
     for nodeA in range(len(nodes)):
         for nodeB in range(nodeA+1, len(nodes)):

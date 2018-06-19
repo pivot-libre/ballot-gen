@@ -11,7 +11,11 @@ def generate_alchemy_graph(graph, outdir):
         caption = node
         alchemy['nodes'].append({'id': node, 'caption': caption})
     for edge in graph['edges']:
-        alchemy['edges'].append({'source': edge[graph_gen.SOURCE], 'target': edge[graph_gen.TARGET]})
+        e = {'source': edge[graph_gen.SOURCE], 'target': edge[graph_gen.TARGET]}
+        # TODO: figure out whether Alchemy supports edge labels
+        if 'label' in edge:
+            e['label'] = edge['label']
+        alchemy['edges'].append(e)
     js = json.dumps(alchemy)
 
     if os.path.exists(outdir):
