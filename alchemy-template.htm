@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="alchemy/0.4.2/alchemy.css"/>
+
+    <style>
+      .node text {
+        fill: black;
+        font-weight: 200;
+        text-anchor: middle;
+        text-shadow: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="alchemy" id="alchemy"></div>
+    <script src="alchemy/0.4.2/scripts/vendor.js"></script>
+    <script src="alchemy/0.4.2/alchemy.js"></script>
+
+    <script type="text/javascript">
+      var graph_data = <GRAPH_DATA>;
+
+      var config = {
+        dataSource: graph_data,
+
+        directedEdges: true,
+        backgroundColour: "white",
+        nodeCaptionsOnByDefault: true,
+
+        edgeStyle: {"all":{
+          "color": "black",
+          "opacity": 1,
+          "width": 2,
+        }},
+
+        nodeStyle: {"all":{
+          "borderColor": "black",
+          "borderWidth": 2,
+          "color": "white",
+          "radius": 30,
+        }},
+      };
+
+      alchemy = new Alchemy(config)
+    </script>
+  </body>
+</html>
