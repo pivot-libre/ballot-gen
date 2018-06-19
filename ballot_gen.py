@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import os, sys, json
-import graph_gen, condorcet
+import graph_gen, condorcet, visualize
 
 def ballots_to_bump_edge_count(nodes, source, target):
     others = filter(lambda node: node != source and node != target, nodes)
@@ -50,6 +50,10 @@ def main():
         out_path = os.path.join(out_dir, '%d-results.json'%graph_num)
         with open(out_path, 'w') as f:
             f.write(json.dumps(results) + '\n')
+
+        # visualize graph
+        graph_dir = os.path.join(out_dir, '%d-graph'%graph_num)
+        visualize.generate_alchemy_graph(graph, graph_dir)
 
 if __name__ == '__main__':
     main()
