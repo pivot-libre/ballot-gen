@@ -22,6 +22,12 @@ def random_gen_size(node_count=1):
                 edges.append({SOURCE: nodes[nodeB], TARGET: nodes[nodeA]})
     return {'nodes': nodes, 'edges': edges}
 
+def add_winner(graph, node):
+    assert(not node in graph['nodes'])
+    for target in graph['nodes']:
+        graph['edges'].append({'source': node, 'target': target})
+    graph['nodes'].append(node)
+
 def gen_graphs(graph_count, min_node_count, max_node_count):
     graphs = []
     for i in range(graph_count):

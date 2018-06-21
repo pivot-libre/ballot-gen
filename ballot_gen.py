@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import os, sys, json
+import os, sys, json, argparse
 import graph_gen, condorcet, visualize
 
 def ballots_to_bump_edge_count(nodes, source, target):
@@ -19,17 +19,32 @@ def ballots_to_text(ballots=[]):
     return '\n'.join(map(ballot_to_line, ballots))
 
 def main():
-    if len(sys.argv) != 4:
-        print 'Usage: graph-gen.py <number of graphs> <max node count> <out dir>'
-        return
-    graph_count = int(sys.argv[1])
-    max_node_count = int(sys.argv[2])
-    out_dir = sys.argv[3]
+    parser = argparse.ArgumentParser(description='Generate some graphs and ballots')
+    parser.add_argument('-c', '--count', metavar='c', type=int, default=1,
+                        help='number of graphs')
+    parser.add_argument('-n', '--nodes', metavar='n', type=int, default=4,
+                        help='number of nodes')
+    parser.add_argument('-w', '--winners', metavar='w', type=int, default=0,
+                        help='number of extra winners in addition to "n" nodes')
+    parser.add_argument('-o', '--out_dir', metavar='o', type=str, default='out',
+                        help='directory in which to dump output')
+    args = parser.parse_args()
+    
+    graph_count = args.count
+    max_node_count = args.nodes
+    extra_winners = args.winners
+    out_dir = args.out_dir
 
-    if not os.path.exists(out_dir):
-        os.mkdir(out_dir)
+    if os.path.exists(out_dir):
+        print 'Dir %s already exists' % out_dir
+        sys.exit(1)
+    os.mkdir(out_dir)
 
     for graph_num,graph in enumerate(graph_gen.gen_graphs(graph_count, 2, max_node_count)):
+        for i in range(extra_winners):
+            name = 'W%d' % (extra_winners - i)
+            graph_gen.add_winner(graph, name)
+        
         print graph
         nodes = graph['nodes']
         edges = graph['edges']
